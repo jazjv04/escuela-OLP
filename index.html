@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escuela Primaria Octavio Lopez Pascal</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Configuración de colores personalizados -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'escuela-azul': '#216D62',
+                        'escuela-electrico': '#2A80B0',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Font Awesome para íconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- CSS personalizado -->
+    <link rel="stylesheet" href="styles/custom.css">
+</head>
+
+<body class="font-sans bg-white">
+
+    <!--Llamado de Componentes-->
+    <div id="app">
+        <div id="header-container"></div>
+        <main>
+            <div id="homePage-container"></div>
+        </main>
+        <div id="footer-container"></div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="js/script.js"></script>
+
+    <script>    
+        // Función para cargar componentes
+        async function loadComponent(containerId, filePath) {
+            try {
+                const response = await fetch(filePath);
+                if (!response.ok) {
+                    throw new Error(`Error cargando ${filePath}: ${response.status}`);
+                }
+                const content = await response.text();
+                document.getElementById(containerId).innerHTML = content;
+                
+                // Inicializar componentes después de cargar
+                if (typeof initializeComponents === 'function') {
+                    setTimeout(initializeComponents, 100);
+                }
+            } catch (error) {
+                console.error('Error cargando componente:', error);
+                document.getElementById(containerId).innerHTML = `
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                        Error cargando ${filePath}. Asegúrate de usar Live Server.
+                    </div>
+                `;
+            }
+        }
+
+        // Cargar todos los componentes cuando la página esté lista
+        document.addEventListener('DOMContentLoaded', function() {
+            loadComponent('header-container', 'components/header.html');
+            loadComponent('homePage-container', 'pages/homePage.html');
+            loadComponent('footer-container', 'components/footer.html');
+        });
+    </script>
+</body>
+</html>
